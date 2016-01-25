@@ -1,7 +1,12 @@
 import test from 'blue-tape';
 import initDeis from '../src';
 
-const deis = initDeis();
+const opts = process.env.DEIS_CONTROLLER ? {
+  controller: process.env.DEIS_CONTROLLER,
+  token: process.env.DEIS_TOKEN,
+} : null;
+
+const deis = initDeis(opts);
 
 /* eslint-disable arrow-body-style */
 test('GET /apps', (t) => {
