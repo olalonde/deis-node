@@ -3,7 +3,7 @@
 ## Install
 
 ```
-npm install --save deis-node
+npm install --save deis
 ```
 
 ## Usage
