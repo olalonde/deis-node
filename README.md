@@ -1,5 +1,7 @@
 # deis-node
 
+[Deis](http://deis.io/) API client for Node and the browser.
+
 ## Install
 
 ```
