@@ -37,7 +37,7 @@
     "nodemon": "^1.8.1",
     "rimraf": "^2.5.0"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "config": {
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog/"
