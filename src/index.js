@@ -2,8 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import superagent from 'superagent';
 
-const initAuth = (token) => (request) => {
-  request.set('Authorization', `token ${token}`);
+const initAuth = (user) => (request) => {
+  if (user.token) {
+    request.set('Authorization', `token ${user.token}`);
+  }
   return request;
 };
 
@@ -38,10 +40,12 @@ export default (_opts) => {
     const configPath = path.join(process.env.HOME, '.deis', `${profile}.json`);
     opts = JSON.parse(fs.readFileSync(configPath));
   }
-  const { controller, token } = opts;
+  const { controller } = opts;
 
+  const user = { token: opts.token };
   const prefix = initPrefix(`${controller}/v1`);
-  const auth = initAuth(token);
+
+  const auth = initAuth(user);
 
   const request = {};
   ['get', 'post', 'put', 'del'].forEach((method) => {
@@ -130,8 +134,13 @@ export default (_opts) => {
     auth: {
       register: (data) => r.post(`/auth/register`).send(data).result(),
       del: () => r.det(`/auth/register`).result(),
-      login: (data) => r.post(`/auth/login`).send(data).result(),
-      logout: (data) => r.post(`/auth/logout`).send(data).result(),
+      login: (data) => r.post(`/auth/login/`).send(data).result().then(({ token }) => {
+        user.token = token;
+        return token;
+      }),
+      logout: (data) => r.post(`/auth/logout`).send(data).result().then(() => {
+        delete user.token;
+      }),
       apiKey: () => r.get(`/auth/generate-api-key`).result(),
     },
     admin: {
